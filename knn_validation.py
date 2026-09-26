@@ -3,6 +3,10 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import NearestNeighbors
 import warnings
 import os
+# ★ 開啟 Pandas 的中文全形字自動對齊功能
+pd.set_option('display.unicode.east_asian_width', True)
+pd.set_option('display.unicode.ambiguous_as_wide', True)
+pd.set_option('display.width', 1000)  # 避免螢幕寬度不足自動換行
 #這個預測模型具有中等偏上（ROC-AUC 約 0.74 ~ 0.78）的區辨能力，整體準確率 (Accuracy)：約 85% ~ 87%
 
 #忽略 Pandas 處理時的一些警告訊息，讓終端機畫面乾淨
@@ -11,7 +15,7 @@ warnings.filterwarnings('ignore')
 # 1. 讀取醫師提供的真實資料
 # 自動取得當前檔案 (knn_validation.py) 所在的資料夾路徑
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(BASE_DIR, 'dataset_20260918_1k.csv')
+csv_path = os.path.join(BASE_DIR, 'dataset_20260918_1k_with_names.csv')
 # 讀取 CSV
 df = pd.read_csv(csv_path)
 
@@ -71,7 +75,8 @@ for idx, test_patient in test_df_scaled.iterrows():
     
     # 將結果儲存，方便後續印出或轉為 DataFrame 檢視
     results.append({
-        'Test_Patient_ID': idx,
+        'Excel_Row': idx + 2,
+        'Name': test_df.loc[idx, 'name'],
         'Degree': target_degree,
         'Serious_Risk(%)': round(serious_risk_pct, 2),
         'Admit_Distribution': admit_distribution

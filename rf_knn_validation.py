@@ -5,13 +5,17 @@ import pandas as pd #資料表處理工具
 from sklearn.ensemble import RandomForestClassifier #隨機森林分類器
 from sklearn.neighbors import NearestNeighbors #K-近鄰演算法
 from sklearn.preprocessing import MinMaxScaler #資料最大最小標準化工具
+# ★ 開啟 Pandas 的中文全形字自動對齊功能
+pd.set_option('display.unicode.east_asian_width', True)
+pd.set_option('display.unicode.ambiguous_as_wide', True)
+pd.set_option('display.width', 1000)  # 避免螢幕寬度不足自動換行
 
 # 忽略警告訊息
 warnings.filterwarnings('ignore')
 
 # 1. 讀取與清理資料
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(BASE_DIR, 'dataset_20260918_1k.csv')
+csv_path = os.path.join(BASE_DIR, 'dataset_20260918_1k_with_names.csv')
 df = pd.read_csv(csv_path)
 
 # 特徵欄位
@@ -60,7 +64,8 @@ for i, (idx, test_patient) in enumerate(test_df.iterrows()):
     admit_dist = {k: f"{round(v * 100)}%" for k, v in admit_dist.items()}
     
     results.append({
-        'Test_Patient_ID': idx,
+        'Excel_Row': idx + 2,
+        'Name': test_df.loc[idx, 'name'],
         'Degree': test_patient['degree'],
         'Serious_Risk(%)': round(test_rf_probs[i], 2), # 隨機森林預測之精準風險
         'Admit_Distribution': admit_dist               # KNN 找出的相似個案動向
